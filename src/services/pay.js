@@ -138,18 +138,32 @@ export class PayService {
         order.block_transaction_id = txId;
 
         // 2. Notify Bot
-        const msg = `
-<b>📢📢有新的交易支付成功！</b>
-<pre>交易号：${order.trade_id}</pre>
-<pre>订单号：${order.order_id}</pre>
-<pre>交易哈希：${order.block_transaction_id}</pre>
-<pre>请求支付金额：${order.amount} ${order.currency}</pre>
-<pre>实际支付金额：${order.actual_amount} USDT</pre>
-<pre>钱包地址：${order.token}</pre>
-<pre>订单创建时间：${new Date(order.created_at).toLocaleString()}</pre>
-<pre>支付成功时间：${new Date().toLocaleString()}</pre>
-`;
-        await sendToBot(this.env, msg);
+      const msg = `📢📢有新的交易支付成功！
+\`\`\`交易号：
+${order.trade_id}
+\`\`\`
+\`\`\`订单号：
+${order.order_id}
+\`\`\`
+\`\`\`交易哈希：
+${order.block_transaction_id}
+\`\`\`
+\`\`\`请求支付金额：
+${order.amount} ${order.currency || 'CNY'}
+\`\`\`
+\`\`\`实际支付金额：
+${order.actual_amount} USDT
+\`\`\`
+\`\`\`钱包地址：
+${order.token}
+\`\`\`
+\`\`\`订单创建时间：
+${new Date(order.created_at).toLocaleString()}
+\`\`\`
+\`\`\`支付成功时间：
+${new Date().toLocaleString()}
+\`\`\``;
+      await sendToBot(this.env, msg, 'Markdown');
 
         // 3. Callback
         await this.sendCallback(order);

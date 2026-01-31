@@ -1,4 +1,4 @@
-export const sendToBot = async (env, message) => {
+export const sendToBot = async (env, message, parseMode = 'HTML') => {
   if (!env.TG_BOT_TOKEN || !env.TG_MANAGE) {
     return;
   }
@@ -6,7 +6,7 @@ export const sendToBot = async (env, message) => {
   const payload = {
     chat_id: env.TG_MANAGE,
     text: message,
-    parse_mode: 'HTML'
+    parse_mode: parseMode
   };
 
   try {
