@@ -35,7 +35,7 @@ export class OrderService {
 
       const response = await fetch(url, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         },
@@ -50,7 +50,7 @@ export class OrderService {
     } catch (e) {
       console.error("Failed to fetch Binance rate:", e);
     }
-    
+
     // Fallback or error? The original code assumes success or returns error.
     throw new Error("Failed to fetch USDT rate");
   }
@@ -67,22 +67,22 @@ export class OrderService {
     const currency = (req.currency || 'CNY').toUpperCase();
 
     if (currency === 'USD') {
-        baseAmount = parseFloat(req.amount);
+      baseAmount = parseFloat(req.amount);
     } else {
-        // CNY logic
-        let rate;
-        try {
-          rate = await this.getUsdtRate();
-        } catch (e) {
-          throw { code: Errno.RATE_AMOUNT_ERR, message: ErrMsg[Errno.RATE_AMOUNT_ERR] };
-        }
-        // actual_amount = amount / rate
-        // We keep 4 decimals for USDT
-        baseAmount = Math.floor((req.amount / rate) * 10000) / 10000;
+      // CNY logic
+      let rate;
+      try {
+        rate = await this.getUsdtRate();
+      } catch (e) {
+        throw { code: Errno.RATE_AMOUNT_ERR, message: ErrMsg[Errno.RATE_AMOUNT_ERR] };
+      }
+      // actual_amount = amount / rate
+      // We keep 4 decimals for USDT
+      baseAmount = Math.floor((req.amount / rate) * 10000) / 10000;
     }
-    
+
     if (baseAmount < 0.01) { // Min amount check (assuming 0.01 USDT min)
-         throw { code: Errno.PAY_AMOUNT_ERR, message: ErrMsg[Errno.PAY_AMOUNT_ERR] };
+      throw { code: Errno.PAY_AMOUNT_ERR, message: ErrMsg[Errno.PAY_AMOUNT_ERR] };
     }
 
     // 4. Find available wallet
@@ -100,13 +100,13 @@ export class OrderService {
     //     For each wallet:
     //       Check if order exists with (token, candidateAmount, status=1)
     //       If NOT exists, USE THIS!
-    
+
     let selectedToken = null;
     let finalAmount = 0;
 
     for (let i = 0; i < IncrementalMaximumNumber; i++) {
       const candidateAmount = parseFloat((baseAmount + (i * UsdtAmountPerIncrement)).toFixed(4));
-      
+
       for (const wallet of wallets.results) {
         // Check availability
         // We use a simplified check here. In high concurrency, this might conflict.
@@ -130,17 +130,17 @@ export class OrderService {
     // 6. Create Order
     const tradeId = this.generateTradeId();
     const now = Date.now();
-    
+
     // We assume expiration time is in minutes
     const expirationTime = parseInt(this.env.ORDER_EXPIRATION_TIME || 10);
     const expirationTimestamp = now + (expirationTime * 60 * 1000);
 
     await this.env.DB.prepare(
       `INSERT INTO orders (
-        trade_id, order_id, actual_amount, amount, token, status, notify_url, redirect_url, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`
+        trade_id, order_id, actual_amount, amount, token, currency, status, notify_url, redirect_url, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?, ?, ?)`
     ).bind(
-      tradeId, req.order_id, finalAmount, req.amount, selectedToken, req.notify_url, req.redirect_url, now, now
+      tradeId, req.order_id, finalAmount, req.amount, selectedToken, currency, req.notify_url, req.redirect_url, now, now
     ).run();
 
     return {
