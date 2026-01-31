@@ -7,6 +7,7 @@ CREATE TABLE orders (
     actual_amount REAL NOT NULL,
     amount REAL NOT NULL,
     token TEXT NOT NULL,
+    currency TEXT DEFAULT 'CNY',
     status INTEGER DEFAULT 1 NOT NULL, -- 1: Wait, 2: Success, 3: Expired
     notify_url TEXT NOT NULL,
     redirect_url TEXT,
