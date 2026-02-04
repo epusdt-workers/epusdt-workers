@@ -4,10 +4,13 @@
   "description": "epusdt ported to Cloudflare Workers",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deploy:setup": "npm run build && wrangler d1 execute DB --file=./schema.sql --remote --yes"
   },
   "dependencies": {
     "crypto-js": "^4.2.0",
     "hono": "^4.0.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.62.0"
   }
 }
