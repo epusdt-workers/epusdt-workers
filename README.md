@@ -1,5 +1,7 @@
 # Epusdt in Cloudflare Workers
 
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/epusdt-workers/epusdt-workers)
+
 A serverless implementation of [epusdt](https://github.com/assimon/epusdt) built on Cloudflare Workers, Hono, and D1 Database. This project serves as a USDT (TRC20) payment gateway that monitors blockchain transactions and processes orders automatically.
 
 ## Features
@@ -71,6 +73,16 @@ execute SQL at your D1 dashboard:
 ```
 INSERT INTO wallet_address (token, status, created_at, updated_at) 
 VALUES ('Replace-this-with-your-own-TRON-wallet-address', 1, 1706688000000, 1706688000000);
+```
+
+Set your EPUSDT API AUTH Token
+```bash
+wrangler secret put API_AUTH_TOKEN
+```
+
+Set your Telegram Bot token
+```bash
+wrangler secret put TG_BOT_TOKEN
 ```
 
 ### 5. Configuration

@@ -1,0 +1,23 @@
+name = "epusdt-worker"
+main = "src/index.js"
+compatibility_date = "2024-01-01"
+
+[vars]
+APP_NAME = "epusdt-workers"
+APP_URI = "https://epusdt.localhost"
+APP_DEBUG = "true"
+TG_BOT_TOKEN = "0000000:xxxxxxxxxxxxxxxx"
+TG_MANAGE = "xxxxxxxx"
+API_AUTH_TOKEN = "xxxxxxxxxx"
+BINANCE_API_KEY = ""
+BINANCE_API_SECRET = ""
+ORDER_EXPIRATION_TIME = "1440"
+FORCED_USDT_RATE = ""
+
+[[d1_databases]]
+binding = "DB"
+database_name = "epusdt-workers"
+database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx"
+
+[triggers]
+crons = ["* * * * *"]
